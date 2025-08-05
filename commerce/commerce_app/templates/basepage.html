@@ -1,0 +1,196 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>{% block title %}{% endblock title %} - Net Bağlantı</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/png" href="{% static "assets/icon.png" %}" />
+        <!-- Bootstrap icons-->
+        
+        <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/css/fontawesome.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="{% static "css/styles.css" %}" rel="stylesheet" />
+        
+        <style>
+            /* Okları her zaman görünür yap */
+            input[type=number]::-webkit-inner-spin-button, 
+            input[type=number]::-webkit-outer-spin-button {  
+            
+               opacity: 1;
+            
+            }
+            
+            </style>
+            <style>
+                .text-truncate-custom {
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                }
+              </style>
+            <style>
+                .modal-backdrop {
+                  opacity: 0.5; /* Arka planın şeffaflık seviyesini ayarlayın (0 ile 1 arasında bir değer kullanın) */
+                }
+              </style>
+              {% block head %}{% endblock head %}
+
+              <!-- Bootstrap CSS -->
+
+
+    </head>
+    <body class="">
+ <!-- Navigation-->
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #bebebe;">
+    {% comment %} #e3f2fd; {% endcomment %}
+    <div class="container px-4 px-lg-5">
+        {% if user.is_authenticated %}
+        <a href="{% url "home" %}"><img class="navbar-brand" src="{% static "assets/logo.png" %}" style="width:200px;"></a>
+        <div class="d-block d-lg-none">
+            <a href="{% url "cart" %}" class="btn btn-outline-danger">
+                <i class="bi bi-cart-fill"></i>
+            </a>
+            <button class="btn btn-danger dropdown-toggle dropstart" data-bs-toggle="dropdown">
+                <i class="bi bi-person-fill"></i>
+                <ul class="dropdown-menu ">
+                    <li><a class="dropdown-item" href="{% url "profile" %}">Profil</a></li>
+                    <li><a class="dropdown-item" href="{% url "user-logout" %}">Çıkış</a></li>
+                </ul>
+            </button>       
+        </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <form class="d-flex mx-auto" action="{% url 'home' %}" method="get">
+                <input class="form-control me-2 col-9 border border-secondary" type="text" name="q" placeholder="Arama yap..." aria-label="Search">
+                <button class="btn btn-dark" type="submit">Arama</button>
+            </form>
+            
+            <a href="{% url "cart" %}" class="btn btn-light border border-secondary " type="submit">
+                <i class="bi-cart-fill me-1"></i>
+                Sepet
+                {% if cart_products|length == 0 %}
+                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                {% else %}
+                <span class="badge bg-dark text-white ms-1 rounded-pill">{{ cart_count }}</span>
+                {% endif %}
+            </a>
+             <button class="btn btn-light text-success border border-secondary mx-2" type="submit">${{ currency_usd|intcomma }}</button>
+            <div class="dropdown">
+                <button class="btn btn-light border border-secondary dropdown-toggle " type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ user.get_full_name|default:user.username|title }}
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item" href="{% url 'profile' %}">Profilim</a></li>
+                  <a class="dropdown-item" href="{% url 'user-logout' %}"><li>Çıkış Yap</li></a>
+                </ul>
+            </div>
+            <a href="https://wa.me/905426857434" class="btn btn-success  border border-secondary mx-2"><i class="bi-whatsapp me-1 text-center"></i></a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+<!-- Header-->
+<nav class="bg-danger" style="height:4px;"></nav>
+ <!-- Section-->
+ <section class="pb-5">
+    <div class="container px-lg-5 mt-3">
+        <div class="row">
+            <div class="col-lg-3 pb-3">
+                <div class="list-group" id="list-tab" role="tablist">
+                    <div id="carouselExampleSlidesOnly" class="carousel slide mb-2" data-bs-ride="carousel">
+                        <div class="carousel-inner rounded">
+                            
+                            {% for slide in sliders %}
+                                {% if slide.status == True %}
+                                    <div class="carousel-item  active ">
+                                        <a href="{{ slide.link }}"><img src="{{ slide.image.url }}" class="d-block w-100" alt="..."></a>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <a href="{% url "home" %}" class="btn btn-dark  py-4 rounded text-start " style=""><b>SATIŞTAKİ MAKİNELER</b></a>
+                    {% block home %}{% endblock home %}
+                    <a class="list-group-item text-start list-group-item-action active bg-danger mt-2 border-danger border-3 py-4 rounded-top" id="list-home-list" data-bs-toggle="collapse" href="#list-home" role="button" aria-expanded="true" aria-controls="list-home" ><b>AKSESUAR &amp; YEDEK PARÇA</b></a>
+                    
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        {% for brand in brands %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed btn btn-transparent rounded-0 border-top border-end border-start border-bottom " type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ brand.id }}" aria-expanded="false" aria-controls="collapse{{ brand.id }}">
+                                       <h5 class="text-dark"> {{ brand.name }} </h5>
+                                    </button>
+                                </h2>
+                                <div id="collapse{{ brand.id }}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">
+                                        <ul class="list-group">
+                                            {% for sub_model in sub_models %}
+                                                {% if sub_model.brand == brand %}
+                                                <form>
+                                                    <input type="hidden" value="{{ sub_model.id }}" name="submodel" >
+                                                    <button type="submit" class="list-group-item list-group-item-action list-group-item-light rounded-0 h6 text-dark" href="#">{{ sub_model.name }}</button>
+                                                </form>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    
+                
+                </div>
+            </div>
+            
+        <div class="col-lg-9">
+
+{% block content %}
+{% endblock content %}
+</div>
+</div>
+</div>
+</div>
+</section>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<!-- Footer-->
+<footer class="py-5 bg-dark">
+<div class="container"><p class="m-0 text-center text-white">Copyright &copy; Net Bağlantı 2023</p></div>
+</footer>
+    <!-- Bootstrap core JS-->
+    <script src="{% static "js/scripts.js" %}"></script>
+    
+    <!-- Core theme JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/htmx.org/dist/htmx.min.js"></script>
+
+
+
+    <script>
+        $(document).on('click',function(e){
+            if($('#bs-example-navbar-collapse-1').hasClass('in')){
+              $('.collapse').collapse('hide'); 
+            }
+          })
+    </script>
+    
+    
+
+    <script>
+        window.setTimeout(function() {
+            document.querySelectorAll('.alert:not(.no-auto-close)').forEach(function(alert) {
+                new bootstrap.Alert(alert).close();
+            });
+        }, 2000);
+    </script>
+    
+
+</body>
+</html>

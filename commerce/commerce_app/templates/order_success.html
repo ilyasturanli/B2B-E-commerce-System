@@ -1,0 +1,17 @@
+{% extends "basepage.html" %}
+{% block title %}Sipariş Başarılı{% endblock title %}
+{% block home %}<a href="{% url "home" %}" class="btn btn-secondary mt-2 py-4 rounded text-start " style=""><b>ANASAYFA GİT</b></a>{% endblock home %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        {% comment %} <div class="col-md-6 offset-md-3 text-center"> {% endcomment %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Siparişiniz alınmıştır. Teşekkür ederiz.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <a href="{% url 'profile' %}" class="btn btn-warning">Siparişlerim</a>
+            <a href="{% url 'home' %}" class="btn btn-primary mt-2">Ana Sayfaya Dön</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

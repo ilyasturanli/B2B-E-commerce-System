@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Giriş - Net Bağlantı</title>
+    <link rel='stylesheet' href='https://netdna.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'>
+      <link rel="stylesheet" href="{% static "login/css/style.css" %}">
+      <!-- Favicon-->
+      <link rel="icon" type="image/png" href="{% static "assets/icon.png" %}" />
+	<!-- Demo CSS -->
+	<link rel="stylesheet" href="{% static "login/css/demo.css" %}">
+  
+  </head>
+  <body class="bg-transparent">
+ <header class="intro">
+  {% comment %} <img src= "{% static "assets/logo.png" %}" style="width:80%;" class="navbar-brand "> {% endcomment %}
+ {% comment %} <h1> Simple Bootstrap Login Form Example </h1>
+ <p> A Bootstrap code snippet for a simple login form.</p>
+ <div class="action">
+ <a href="">Back to Tutorial</a>
+ </div> {% endcomment %}
+ </header>
+  
+ <main>
+  <article >
+
+  <div class="wrapper align-center">
+    <form class="form-signin border rounded bg-light" method="post">       
+      <img src= "{% static "assets/logo.png" %}" style="width:65%;" class="navbar-brand text-center mb-3">
+      {% if error %}
+              <div class="alert alert-warning"> {{ error }}</div>
+      {% endif %}
+      {% csrf_token %}
+      <input type="text" class="form-control" name="username" placeholder="Kullanıcı Adı">
+      <input type="password" class="form-control" name="password" placeholder="Parola">     
+      {% comment %} <label class="checkbox">
+        <input type="checkbox" value="remember-me" id="rememberMe" name="rememberMe"> Beni Hatırla
+      </label> {% endcomment %}
+      <button class="btn btn-lg btn-danger btn-block" type="submit" value="login">Giriş</button>   
+    </form>
+  </div>
+  </article>
+ </main>
+ 
+  {% comment %} <footer class="credit">Author: Ace Subido - Distributed By: <a title="Awesome web design code & scripts" href="https://www.codehim.com?source=demo-page" target="_blank">CodeHim</a></footer> {% endcomment %}
+  </body>
+</html>

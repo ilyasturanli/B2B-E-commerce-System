@@ -1,0 +1,194 @@
+{% extends "basepage.html" %}
+{% load custom_filters %}
+{% load humanize %}
+{% block title %}Sepet{% endblock title %}
+{% block home %}<a href="{% url "home" %}" class="btn btn-secondary mt-2 py-4 rounded text-start " style=""><b>ANASAYFA GİT</b></a>{% endblock home %}
+{% block content %}
+<section class=" pb-5">
+    <div class="container">
+      <div class="row">
+          <div class="col-lg-12 col-md-12 col-12">
+
+            {% for message in messages %}
+            {% if 'success' in message.tags %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% elif 'warning' in message.tags %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+          {% endfor %}
+        
+            
+            {% if cart_products|length == 0 %}
+            <div class="alert alert-warning no-auto-close" role="alert">
+                Sepetinizde ürün bulunmamaktadır.
+              </div>
+            {% else %}
+              <table id="shoppingCart" class="table table-condensed table-responsive">
+                  <thead>
+                      <tr class="">
+                          <th style="width:60%">Ürün</th>
+                          {% comment %} <th style="width:12%">KDV</th> {% endcomment %}
+                          <th style="width:24%">Fiyat</th>
+                          <th style="width:16%">Adet</th>
+                          <th style="width:26%"></th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                    {% for product in cart_products %}
+                      <tr>
+                          <td data-th="Product" class="px-5">
+                              <div class="row">
+                                  <div class="col-md-3 text-left">
+                                      <img src="{{ product.product.image.url }}" alt="" class="img-fluid d-none d-md-block rounded mb-2 "style="width:100px;">
+                                  </div>
+                                  <div class="col-md-9 text-left mt-sm-2">
+                                      <h4>{{ product.product.name }}</h4>
+                                      <p class="font-weight-light">SKU: {{ product.product.sku }}</p>
+                                      <p class="font-weight-light">Ölçü: {{ product.feature }}</p>
+                                  </div>
+                              </div>
+                          </td>
+                          {% comment %} <td data-th="Price">%20</td> {% endcomment %}
+                          <td data-th="Price">{{ product|usd_calc:product.product.price }} TL</td>
+                          <td data-th="Quantity">
+                            <div class="row">
+                          <form method="post">
+                              {% csrf_token %}
+                              <input type="hidden" name="product_id" value="{{ product.id }}">
+                              <input type="text" class="form-control text-center" name="quantity" value="{{ product.quantity }}" min="1" readonly>
+                              
+                          </form>
+                          <form  method="post"> 
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="{{ product.quantity }}">
+                            <button type="submit" class="btn btn-primary btn-sm" style="width:100%;" name="submit" value="plus" >+</button>
+                        </form>
+                        
+                        <form class="my-1" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="quantity" value="{{ product.quantity }}">
+                        
+                            <button type="submit" class="btn btn-primary btn-sm" style="width:100%;" name="submit" value="minus"
+                            {% if product.quantity == 1 %}disabled{% endif %}
+                            >-</button>
+                        </form>
+                        
+                            
+                            <form method="post" hx-preserve>
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ product.id }}" name="product_id">
+                              <button type="submit" name="submit" value="btndel" class="btn btn-danger  btn-sm " style="width:100%;">
+                                  Sil
+                              </button> 
+                            </form>
+                            </div>
+                          </td>
+                          <td class="actions" data-th="">
+                              <div class="text-right">
+                               
+                                
+                              </div>
+                          </td>
+                      </tr>
+                    {% endfor %}
+                      
+                  </tbody>
+              </table>
+              <div class="row mb-4">
+                <div class="d-flex justify-content-end">
+                
+                <div class="col-md-4">
+                  <form method="post">
+                    {% csrf_token %}
+                  <select type="select" name="cargo" class="form-select mb-3" aria-label="Default select example">
+                  
+                    {% for cargo in cargos %}
+                    <option value="{{ cargo.id }}">{{ cargo.name }}</option>
+                    {% endfor %}
+                  </select>
+                  <div class="card mb-4">
+                    <div class="card-header py-3">
+                      <h5 class="mb-0">Sepet Tutarı</h5>
+                    </div>
+                    <div class="card-body">
+                      <ul class="list-group list-group-flush">
+                        <li
+                          class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                          Ara Toplam
+                          <span>{{ total_price_rounded|intcomma }} TL</span>
+                        </li>
+
+                        <li
+                        class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                        KDV Tutarı
+                        <span>{{kdv_rounded|intcomma}} TL</span>
+                        </li>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                          Kargo
+                          <span></span>
+                        </li>
+                        <li
+                          class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                          <div>
+                            {% comment %} <strong>KDV Dahil</strong> {% endcomment %}
+                            <strong>
+                              <p class="mb-0">Genel Toplam</p>
+                            </strong>
+                          </div>
+                          <span><strong>{{ kdv_price_rounded|intcomma }} TL</strong></span>
+                        </li>
+                      </ul>
+
+                      <button type="submit" name="order-submit" value="ordersubmit" style="width:100%;" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block">
+                        Siparişi Gönder
+                      </button>
+                    </form>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+              <a class="" href="{% url "home" %}" >
+                <i class="bi bi-arrow-left mr-2"></i> Alışverişe Devam Et</a>
+                <div class="row">
+          </div>
+      </div>
+    </div>
+
+
+          <div class="col-sm-6 order-md-2 d-flex text-right justify-content-end">
+            {% comment %} <div class="dropdown">
+                <button class="btn btn-orange btn-lg dropdown-toggle mx-2" style="background-color:orange;" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                  KARGO SEÇİMİ
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                  {% for cargo in cargos %}
+                  <li><a class="dropdown-item" href="#">{{ cargo.name }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div> {% endcomment %}
+              {% comment %} <div class="float-right text-right mt-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="order-submit" value="ordersubmit" class="btn btn-primary btn-lg pl-5">Siparişi Onayla</button>
+                </form>
+            </div> {% endcomment %}
+          </div>
+       
+          <div class="col-sm-6 mb-3 mb-m-1 order-md-1 text-md-left">
+
+          </div>
+      </div>
+  </div>
+  </section>
+
+  {% endblock content %}

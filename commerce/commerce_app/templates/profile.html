@@ -1,0 +1,71 @@
+{% extends "basepage.html" %}
+{% block title %}Profil{% endblock title %}
+{% load static %}
+{% block home %}<a href="{% url "home" %}" class="btn btn-secondary mt-2 py-4 rounded text-start " style=""><b>ANASAYFA GİT</b></a>{% endblock home %}
+{% block content %}
+<div class="row gutters-sm">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+            <div class="card-body">
+            <div class="d-flex flex-column align-items-center text-center">
+              {% for profile in my_profile %}
+            <img src="{{ profile.avatar.url }}" class="rounded border py-2 px-2" width="150" height="150" style="
+            max-width: 150px;
+            max-height: 150px;
+            width: auto;
+            height: auto;
+            border-radius: 100%;">
+            <div class="mt-3">
+            
+            <h4>{{ profile.person }}</h4>
+            <p class="text-secondary mb-1">{{ profile.tel }}</p>
+            <p class="text-secondary mb-1">{{ profile.mail }}</p>
+            {% comment %} <p class="text-muted font-size-sm">{{ profile.adress }}</p> {% endcomment %}
+            <p class="text-muted font-size-sm">{{ profile.state }} / {{ profile.city }}</p>
+            <button class="btn btn-primary" disabled>Düzenle</button>
+            {% endfor %}
+            {% comment %} <button class="btn btn-outline-primary">Message</button> {% endcomment %}
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <div class="col-md-8 mb-3">
+        <div class="card">
+            <div class="card-header text-align">
+            <h5>Son Siparişler</h5>
+            </div>
+        <div class="card-body">
+            
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Sipariş No</th>                
+                    <th scope="col">Durum</th>
+                    <th scope="col">Tarih</th>
+                    <th scope="col">Detay</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for order in orders %}
+                  <tr>
+                    <td scope="row">SP-{{ order.order_id }}</td>
+                    <td>{{ order.status }}</td>
+                    <td>{{ order.created}}</td>
+                    <td><a href="{% url 'order-detail' order.id %}" class="btn btn-success btn-sm">Getir</a></td>
+                  </tr>
+                  {% endfor %}
+                  
+                </tbody>
+              </table>
+        {% comment %} <button class="btn btn-outline-primary">Message</button> {% endcomment %}
+        </div>
+        </div>
+    </div>
+</div>
+
+</div>
+{% endblock content %}
+
+

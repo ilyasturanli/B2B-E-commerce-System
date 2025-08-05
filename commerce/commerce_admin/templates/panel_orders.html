@@ -1,0 +1,67 @@
+{% extends "panel_layout.html" %}
+{% block content %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb adminx-page-breadcrumb">
+    <li class="breadcrumb-item"><a href="#">Panel</a></li>
+    <li class="breadcrumb-item active"  aria-current="page">Siparişler</li>
+  </ol>
+</nav>
+
+<div class="pb-3">
+  <h1>Siparişler</h1>
+</div>
+
+
+<div class="row">
+  <div class="col">
+    <div class="card mb-grid">
+      <div class="table-responsive-md">
+        <table class="table table-actions table-striped table-hover mb-0" data-table>
+          <thead>
+            <tr>
+              <th scope="col">
+                <label class="custom-control custom-checkbox m-0 p-0">
+                  <input type="checkbox" class="custom-control-input table-select-all">
+                  <span class="custom-control-indicator"></span>
+                </label>
+              </th>
+              <th scope="col">Sipariş No</th>
+              <th scope="col">Durum</th>
+              <th scope="col">Gönderen</th>
+              <th scope="col">Tarih</th>
+              <th scope="col">Kargo</th>
+              <th scope="col">Detay</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for order in orders %}
+            <tr>
+              <th scope="row">
+                <label class="custom-control custom-checkbox m-0 p-0">
+                  <input type="checkbox" class="custom-control-input table-select-row">
+                  <span class="custom-control-indicator"></span>
+                </label>
+              </th>
+              <td>SP-{{ order.order_id }}</td>
+              <td>{{ order.status }}</td>
+              <td>{{ order.user }}</td>
+              <td>
+                <span class="badge badge-pill badge-primary">{{ order.created}}</span>
+              </td>
+              <td>{{ order.cargo }}</td>
+              <td>
+                <a href="{% url 'panel-order-detail' order.id %}" class="btn btn-sm btn-primary">Getir</a>
+                <button class="btn btn-sm btn-danger">Sil</button>
+              </td>
+            </tr>
+            {% endfor %}
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}

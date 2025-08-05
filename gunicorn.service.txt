@@ -1,0 +1,14 @@
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/root/Desktop/wsp_siparis_sqlite-6/commerce
+ExecStart=/root/Desktop/wsp_siparis_sqlite-6/commerce/myenv/bin/gunicorn --workers 3 --bind unix:/root/Desktop/wsp_siparis_sqlite-6/commerce/gunicorn.sock commerce.wsgi:application
+ExecStartPost=/bin/chmod 664 /root/Desktop/wsp_siparis_sqlite-6/commerce/gunicorn.sock
+ExecStartPost=/bin/chown root:www-data /root/Desktop/wsp_siparis_sqlite-6/commerce/gunicorn.sock
+
+[Install]
+WantedBy=multi-user.target

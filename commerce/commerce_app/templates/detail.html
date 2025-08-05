@@ -1,0 +1,36 @@
+{% extends "basepage.html" %}
+{% load humanize %}
+{% block title %}Detay{% endblock title %}
+{% block home %}<a href="{% url "home" %}" class="btn btn-secondary mt-2 py-4 rounded text-start " style=""><b>ANASAYFA GİT</b></a>{% endblock home %}
+{% block content %}
+
+<div class="row gx-4 gx-lg-5 align-items-center">
+    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0 border border-2 border-dark border-opacity-25 rounded" src="{{ product_detail.image.url }}" alt="..." /></div>
+    <div class="col-md-6">
+        <div class="small mb-1">SKU: {{ product_detail.sku }}</div>
+
+        <h1 class="display-5 fw-bolder text-danger">{{ product_detail.name }}</h1>
+        
+        <div class="fs-5 mb-5">
+            {% comment %} <span class="text-decoration-line-through"></span> {% endcomment %}
+            <span class="h3 text-dark"> {{ product_detail.price|intcomma }} USD</span>
+        </div>
+        <div class="small mb-1">Model: {{ product_detail.brand }}</div>
+        <div class="small mb-1">Kategori: {{ product_detail.category }}</div>
+        
+        <div class="d-flex">
+            
+            {% comment %} <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
+            <button class="btn btn-outline-dark flex-shrink-0" type="button">
+                <i class="bi-cart-fill me-1"></i>
+                Sepete Ekle
+            </button> {% endcomment %}
+        </div>
+    </div>
+</div>
+<div class="row">
+<span class="h2 mt-5">Ürün Açıklaması</span>
+<hr>
+<p class="lead">{{ product_detail.content|safe }}</p>
+</div>
+{% endblock content %}

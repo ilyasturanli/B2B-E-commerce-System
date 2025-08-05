@@ -1,0 +1,22 @@
+server {
+    listen 80;
+    server_name 37.148.211.23 netbaglanti.com www.netbaglanti.com;
+
+    location = /favicon.ico { 
+        access_log off; 
+        log_not_found off; 
+    }
+    
+    location /static/ {
+        alias /root/Desktop/wsp_siparis_sqlite-6/commerce/staticfiles/;
+    }
+
+    location /media/ {
+        alias /root/Desktop/wsp_siparis_sqlite-6/commerce/media/;
+    }
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/root/Desktop/wsp_siparis_sqlite-6/commerce/gunicorn.sock;
+    }
+}

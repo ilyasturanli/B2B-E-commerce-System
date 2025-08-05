@@ -1,0 +1,101 @@
+{% extends "basepage.html" %}
+{% load custom_filters %}
+{% block title %}Anasayfa{% endblock title %}
+{% block content %}
+{% load humanize %}
+
+
+{% for message in messages %}
+
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+{% endfor %}
+
+<div class="row gx-3 gx-lg-3 row-cols-2 row-cols-md-4 row-cols-xl-4 justify-content-center">
+    {% for product in products %}
+    {% if product.status == True %}
+    {% if not "submodel" in request.GET %}
+    {% if product.category.name == "MAKİNE" %}
+    <div class="col mb-3">
+        <div class="card border border-2 border-dark border-opacity-25">
+            <!-- Product image-->
+            <a href="{% url 'detail' product.id %}">
+            <img class="card-img-top" src="{{ product.image.url }}" style="height: ; width: 100%;">
+            </a>
+            <!-- Product details-->
+            <div class="card-body p-4 bg-light" >
+                <div class="text-center">
+                    <h6 class="fw-bolder text-truncate-custom">{{ product.sku }}</h6>
+                    <!-- Product name-->
+                    <h5 class="fw-bolder text-truncate-custom" title="{{ product.name }}">{{ product.name }}</h5>
+                    <!-- Product price-->
+                    <small  class="py-4"><h6 class="text-success" style="font-size:12px;">{{ product|usd_calc:product.price|intcomma }} TL</h6></small>
+                <b>{{ product.price|intcomma }} USD</b>
+                </div>
+            </div>
+            <!-- Product actions-->
+            <div class="card-footer p-4 pt-0 border-top-0 d-flex justify-content-center">
+                <form class="btn-group" method="post">
+
+                {% csrf_token %}
+                <input type="hidden" value="{{product.id}}" name="product_id">
+               
+                {% if product.category.name == "YEDEK PARÇA" and "AKSESUAR" %}
+                <select name="size_id" class="form-select mx-2" style="width:90px;" aria-label="Default select example">
+                    {% for size in product.size.all %}
+                    <option value="{{ size.id }}">{{ size }}</option>
+                    {% endfor %}
+                  
+                  </select>
+                {% endif %}
+                  <div class="" style=""><button class="btn btn-dark mt-auto" type="submit"><i class="bi bi-cart4"></i></button></div>
+                </form>    
+            </div>
+        </div>  
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="col mb-3">
+        <div class="card  border border-2 border-dark border-opacity-25">
+            <!-- Product image-->
+            <a href="{% url 'detail' product.id %}">
+            <img class="card-img-top" src="{{ product.image.url }}" style="height: ; width: 100%;">
+            </a>
+            <!-- Product details-->
+            <div class="card-body p-4 bg-light">
+                <div class="text-center">
+                    <h6 class="fw-bolder text-truncate-custom">{{ product.sku }}</h6>
+                    <!-- Product name-->
+                    <h5 class="fw-bolder text-truncate-custom" title="{{ product.name }}">{{ product.name }}</h5>
+                    <!-- Product price-->
+                    <small  class="py-4"><h6 class="text-success" style="font-size:12px;">{{ product|usd_calc:product.price|intcomma }} TL</h6></small>
+                    <b>{{ product.price|intcomma }} USD</b>
+                </div>
+            </div>      
+           <!-- Product actions-->
+           <div class="card-footer p-4 pt-0 border-top-0 d-flex justify-content-center">
+            <form class="btn-group" method="post">
+
+            {% csrf_token %}
+            <input type="hidden" value="{{product.id}}" name="product_id">
+           
+            {% if product.category.name == "YEDEK PARÇA" and "AKSESUAR" %}
+            <select name="size_id" class="form-select mx-2" style="width:90px;" aria-label="Default select example">
+                {% for size in product.size.all %}
+                <option value="{{ size.id }}">{{ size }}</option>
+                {% endfor %}
+              </select>
+            {% endif %}
+              <div class="" style=""><button class="btn btn-dark mt-auto" type="submit"><i class="bi bi-cart4"></i></button></div>
+            </form>    
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+{% endblock content %}    
+    
